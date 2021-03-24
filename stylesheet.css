@@ -1,0 +1,73 @@
+body {
+    margin: 0;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 24px;
+    letter-spacing: -0.6px;
+    word-spacing: 3.8px;
+    color: #000000;
+}
+
+@supports not (display: grid) {
+	.site {
+		max-width: 50em;
+		margin: 0 auto;
+	}
+}
+
+#container {
+    display: grid;
+    height: 100vh;
+    grid-template-areas:
+    "header"
+    "main"
+    "controls"
+    "footer";
+    background-color: #1b0130;
+    justify-content: center;
+}
+
+#gameboard {
+    grid-area: main;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    justify-content: space-evenly;
+    align-content: space-evenly;
+    gap: 2px;
+    background-color: white;
+    width: 502px;
+    height: 502px;
+}
+
+.tile {
+    color: #fff;
+    text-shadow:
+    0 0 1px #fff,
+    0 0 2px #fff,
+    0 0 5px #fff,
+    0 0 8px #0ff,
+    0 0 16px #0ff,
+    0 0 24px #0ff,
+    0 0 48px #0ff,
+    0 0 70px #0ff;
+    background-color: #1b0130;
+    justify-content: center;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 166px;
+    font-size: 300%;
+}
+
+#controls {
+    grid-area: controls;
+    background-color: red;
+    height: auto;
+}
+
+header {
+    grid-area: header;
+}
+
+footer {
+    grid-area: footer;
+}
