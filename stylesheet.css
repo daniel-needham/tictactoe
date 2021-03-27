@@ -1,10 +1,13 @@
 body {
+    height: 100vh;
+    width: 100vw;
     margin: 0;
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
     font-size: 24px;
     letter-spacing: -0.6px;
     word-spacing: 3.8px;
     color: #000000;
+    font-variant: small-caps;
 }
 
 @supports not (display: grid) {
@@ -15,13 +18,16 @@ body {
 }
 
 #container {
+    width: 100%;
+    height: 100%;
     display: grid;
-    height: 100vh;
+    grid-template-columns: 1fr;
     grid-template-areas:
     "header"
     "main"
     "controls"
     "footer";
+    column-width: 100vw;
     background-color: #1b0130;
     justify-content: center;
 }
@@ -31,8 +37,8 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-    justify-content: space-evenly;
-    align-content: space-evenly;
+    justify-self: center;
+    align-self: center;
     gap: 2px;
     background-color: white;
     width: 502px;
@@ -58,16 +64,96 @@ body {
     font-size: 300%;
 }
 
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
+
 #controls {
     grid-area: controls;
-    background-color: red;
+    background-color: ;
     height: auto;
+    display: flex;
+    justify-content: center;
+    color: #fff;
+    text-shadow:
+    0 0 1px #fff,
+    0 0 2px #fff,
+    0 0 5px #fff,
+    0 0 8px #0ff,
+    0 0 16px #0ff,
+    0 0 24px #0ff,
+    0 0 48px #0ff,
+    0 0 70px #0ff;
+}
+
+.teams {
+    display: grid;
+    align-content: center;
+    grid-template-columns: 1fr;
+    opacity: 1;
+    -webkit-transition-duration: 700ms;
+    -moz-transition-duration: 700ms;
+    -o-transition-duration: 700ms;
+    transition-duration: 700ms;
+    transition-property: opacity;
+}
+
+.fade {
+    opacity: 0;
 }
 
 header {
+    display: flex;
+    justify-content: center;
+    align-content: center;
     grid-area: header;
+    color: #fff;
+    text-shadow:
+    0 0 1px rgb(255, 255, 255),
+    0 0 2px #fff,
+    0 0 5px #fff,
+    0 0 8px rgba(0, 255, 255, 0.815),
+    0 0 16px rgb(0, 174, 255),
+    0 0 24px rgb(0, 174, 255),
+    0 0 48px rgb(0, 195, 255),
+    0 0 70px rgb(0, 255, 106);
+    letter-spacing: 2px;
+}
+
+header h1{
+    display: flex;
+    justify-self: center;
+    align-self:center;
 }
 
 footer {
     grid-area: footer;
+    height: 30px;
+    align-self: flex-end;
+    justify-self: flex-start;
 }
+
+.flicker-slow{
+    animation: flicker 3s linear infinite;
+  }
+  
+  .flicker-fast{
+    animation: flicker 1s linear infinite;
+  }
+  
+  @keyframes flicker {
+      0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+          //text-shadow: none;
+      opacity: .99;
+          
+      }
+      20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+          opacity: 0.4;
+      }
+  }
