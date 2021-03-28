@@ -77,9 +77,13 @@ body {
 #controls {
     grid-area: controls;
     background-color: ;
-    height: auto;
-    display: flex;
+    height: 200px;
+    display: grid;
+    grid-template-rows: 100px 100px;
     justify-content: center;
+    grid-template-areas: 
+    "player"
+    "win";
     color: #fff;
     text-shadow:
     0 0 1px #fff,
@@ -102,6 +106,25 @@ body {
     -o-transition-duration: 700ms;
     transition-duration: 700ms;
     transition-property: opacity;
+}
+
+#naughts {
+    grid-area: player;
+    display: flex;
+    justify-content: center;
+}
+
+#crosses {
+    grid-area: player;
+    display: flex;
+    justify-content: center;
+}
+
+#win {
+    grid-area: win;
+    display: flex;
+    justify-content: center;
+    height: 50px;
 }
 
 .fade {
@@ -137,6 +160,8 @@ footer {
     height: 30px;
     align-self: flex-end;
     justify-self: flex-start;
+    color:rgb(119, 119, 119);
+    font-size: 20px;
 }
 
 .flicker-slow{

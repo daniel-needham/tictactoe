@@ -9,16 +9,18 @@ const Player = (name, team) => {
         return wins;
     }
 
-    return { getName, getTeam, addWin };
+    const resetWins = () => {
+        wins = 0;
+    }
+
+    return { getName, getTeam, addWin, resetWins };
 }
 
 const naughts = Player("naughts", "O");
 const crosses = Player("crosses", "X");
 
 const gameBoard = (() => {
-    let board = ["", "", "",
-        "", "", "",
-        "", "", ""];
+    let board = ["", "", "", "", "", "", "", "", ""];
 
     const state = () => {
         return board;
@@ -37,13 +39,20 @@ const gameBoard = (() => {
                 console.log(e.target.id);                                         //this means event listener doesnt need to be reapplied when dom changes
                 gameController.play(gameController.getPlayer(), e.target.id)
                 displayController.board(gameBoard.state());
-                if (gameController.winCheck(gameBoard.state(),gameController.getPlayer().getTeam())){
+                let win = gameController.winCheck(gameBoard.state(), gameController.getPlayer().getTeam());
+                if (win === "win") {
                     console.log("Win");
+                    gameController.won()
+                    displayController.board(gameBoard.state(), true); //stops other tiles being selected
+                } else if (win === "draw") {
+                    console.log("Draw")
+                    gameController.draw();
+                    displayController.board(gameBoard.state(), true);//stops other tiles being selected
                 } else {
-                gameController.playerToggle();
-                displayController.turn();
+                    gameController.playerToggle();
+                    displayController.turn();
                 }
-                
+
             }
         });
     }
@@ -60,22 +69,23 @@ const displayController = (() => {
     const gameBoard = document.querySelector("#gameboard");
 
     //creates tiles in dom and gives index as id
-    const tile = (arrayItem, index) => {
+    const tile = (arrayItem, index, roundOver) => {
         let tile = document.createElement("div");
         tile.setAttribute("class", "tile");
         if (arrayItem === "X") tile.setAttribute("class", "tile cross");
         if (arrayItem === "O") tile.setAttribute("class", "tile naught");
+        if (arrayItem === "" && roundOver) tile.setAttribute("class", "tile noclicky")
         tile.setAttribute("id", index);
         tile.textContent = arrayItem;
         gameBoard.appendChild(tile);
     }
 
     //turns board array into gameboard
-    const board = (array) => {
+    const board = (array, roundOver) => {
         while (gameBoard.lastChild) gameBoard.removeChild(gameBoard.lastChild);
         let index = 0;
         array.forEach(arrayItem => {
-            const thing = tile(arrayItem, index); //creates tile and gives index as id
+            const thing = tile(arrayItem, index, roundOver); //creates tile and gives index as id
             index++;
         });
     }
@@ -91,18 +101,30 @@ const displayController = (() => {
             firstLoad = false;
         } else if (gameController.getPlayer() === naughts) {
             crossesInd.className = "fade";
-            window.setTimeout(function() {naughtsInd.className = "";}, 230);
+            window.setTimeout(function () { naughtsInd.className = ""; }, 230);
         } else {
             naughtsInd.className = "fade";
-            window.setTimeout(function() {crossesInd.className = "";}, 230);
+            window.setTimeout(function () { crossesInd.className = ""; }, 230);
         }
     }
 
+    const outcome = (text) => {
+        const winBox = document.querySelector("#win");
+        let h = document.createElement("H1");
+        let t = document.createTextNode(text);
+        winBox.appendChild(h);
+        h.appendChild(t);
+        window.setTimeout(function () {
+            winBox.removeChild(h);
+        }, 3500);
+
+    }
 
     return {
         tile,
         board,
-        turn
+        turn,
+        outcome,
     }
 
 })();
@@ -157,28 +179,68 @@ const gameController = (() => {
 
     //check gameboard to see if move has won
     const winCheck = (array, team) => {
-        let win = false;
+        let win = "";
         //returns array of all the indexes X or O is on the gameboard 
         let indexes = gameController.getIndexes(array, team);
         //iterates through winningpath 
         winningPath.some(element => {
-            
-            let result = element.filter(arr => indexes.includes(arr)); 
-            if (result.toString() === element.toString()) {
-                win = true;
+            //filters thru indexes pulling only those that match winning path arr[x]
+            let result = element.filter(arr => indexes.includes(arr));
+            if (result.toString() === element.toString()) { //converts both to strings and checks if they are the same
+                win = "win";
                 console.log(win);
             }
-            
+
         });
+        if (indexes.length === 5) win = "draw";
         return win
-        
-        
-        
+
+    }
+
+    const romanize = (num) => {
+        if (isNaN(num))
+            return NaN;
+        var digits = String(+num).split(""),
+            key = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
+                "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
+                "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
+            roman = "",
+            i = 3;
+        while (i--)
+            roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+        return Array(+digits.join("") + 1).join("M") + roman;
     }
 
     // let result = winningPath[1].filter(arr => indexes.includes(arr));
     const won = () => {
+        let wins = player.addWin();
+        
+        if (wins === 3) {
+            displayController.outcome("wins best of iii");
+            naughts.resetWins();
+            crosses.resetWins();
+        } else {
+            wins = romanize(wins);
+            displayController.outcome(wins);
+        }
+        window.setTimeout(function () {
+            gameController.reset();
+        }, 3500);
+    }
 
+    const draw = () => {
+        displayController.outcome("draw");
+        window.setTimeout(function () {
+            gameController.reset();
+        }, 3500);
+    }
+
+    const reset = () => {
+        let board = ["", "", "", "", "", "", "", "", ""];
+        gameBoard.updateState(board);
+        if (player = crosses) playerToggle();
+        displayController.board(gameBoard.state());
+        displayController.turn();
     }
 
     return {
@@ -187,6 +249,9 @@ const gameController = (() => {
         play,
         getIndexes,
         winCheck,
+        reset,
+        won,
+        draw,
     }
 
 })();
@@ -194,4 +259,4 @@ const gameController = (() => {
 displayController.board(gameBoard.state());
 gameBoard.tileListener();
 displayController.turn();
-console.log(gameController.getIndexes(gameBoard.state(), "X"))
+
