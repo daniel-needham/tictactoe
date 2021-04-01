@@ -192,7 +192,8 @@ const gameController = (() => {
             }
 
         });
-        if (indexes.length === 5) win = "draw";
+        if (win === "" && indexes.length === 5) win = "draw";
+        console.log(win);
         return win
 
     }
